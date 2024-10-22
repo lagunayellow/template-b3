@@ -1,0 +1,632 @@
+@import "0-mixin/_mixin-dir"
+@import "1-maps/_maps-dir"
+@import "2-media/_media-dir"
+@import "3-placeholders/_placeholder-dir"
+::selection
+    background-color: $active
+    color: white
+*
+    margin: 0
+    padding: 0
+a, a:link, a:active, a:hover, a:visited
+    color: white
+    text-decoration: none
+body
+    overflow-x: hidden
+    font-family: Helvetica
+a, div, nav, section, header, label, empty, presentation
+    display: block
+    position: relative
+    box-sizing: border-box
+    outline: 2px solid
+    outline-width: 0
+ul, li
+    list-style-type: none
+ul[disabled="true"], li[disabled="true"] a
+    color: dimgrey
+    fill: dimgrey
+span > a[class^="button"]
+    display: inline-block
+    overflow: hidden
+    z-index: 3
+    background-color: $active
+    transition: padding 300ms
+    @include get-media($button, padding, font-size)
+    svg
+        position: absolute
+        right: -40px
+        display: inline-block
+        bottom: 50%
+        fill: white
+        transition: right 300ms
+        transform: rotate(-90deg) translate(-50%, -50%)
+        @include dimension(10px, 10px)
+    .arrow.shown
+        right: 4px !important
+    &:hover
+        @include get-media($button-hover, padding)
+.preventScroll
+    overflow: hidden
+
+/* Preloader */
+#preloader
+    display: block
+    opacity: 1
+    z-index: 9999
+    position: fixed
+    background-color: #d5d6d6
+    transition: opacity 500ms
+    @include dimension(100%, 100vh)
+    @include cardinals(0, 0, 0, 0)
+    .pulse
+        margin-top: -10px
+        margin-left: -10px
+        &:after
+            z-index: -1
+            animation-delay: 0.4s
+        @keyframes effect
+            0%
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 1)
+            40%
+                box-shadow: 0 0 0 50px rgba(0, 0, 0, 0)
+            80%
+                box-shadow: 0 0 0 50px rgba(0, 0, 0, 0)
+            100%
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0)
+        @keyframes effect
+            0%
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 1)
+            50%
+                box-shadow: 0 0 0 50px rgba(0, 0, 0, 0)
+            90%
+                box-shadow: 0 0 0 50px rgba(0, 0, 0, 0)
+            100%
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0)
+        img
+            position: absolute
+            @include cardinals(-100%, -125%, none, none)
+    .pulse, [class*="pulse"]:before, :after
+        @extend %center
+        @include dimension(20px, 20px)
+        content: ''
+        border-radius: 50%
+        animation: effect 1.8s linear infinite
+/* /end Preloader */
+
+/* Resolution */
+#resolution
+    position: fixed
+    text-align: center
+    line-height: 80px
+    font-size: 2rem
+    z-index: 99
+    @include cardinals(null, -300px, 0, 0)
+    @include dimension(400px, 80px)
+    @include get-media($resolution, background-color, color)
+    @include get-media($icon, transition)
+    @at-root .toggle
+        left: 0 !important
+/* /end Resolution */
+
+/* Settings */
+#options
+    display: block
+    position: fixed
+    z-index: 0
+    transition: background-color 400ms
+    @include dimension(100%, 100vh)
+    .container
+        @include dimension(100%, 100%)
+        @extend %container
+        .grid
+            @extend %grid
+            .cell
+                // position: absolute
+                background-color: #eeeeee
+                @include layout(column, center, center)
+                @include dimension(800px, 400px)
+                &[value="setting"]
+                    opacity: 0
+                    transition: opacity 400ms
+                    .title
+                        text-align: center
+                        font-size: 1.5rem
+                        @include dimension(100%, 30%)
+                        @include layout(column, center, center)
+                        &:after
+                            background-color: black
+                            bottom: 10%
+                            @include dimension(80%, 2px)
+                            @extend %pseudo
+                    .close
+                        position: absolute
+                        @include cardinals(20px, none, none, 20px)
+                        @include layout(column, center, center)
+                        @include dimension(40px, 40px)
+                        @each $name in 'left', 'right'
+                            @if $name == 'left'
+                                .#{$name}
+                                    transform: rotate(45deg)
+                            @else
+                                .#{$name}
+                                    transform: rotate(-45deg)
+                        .left, .right
+                            margin-top: -2px
+                            background-color: black
+                            @include dimension(30px, 2px)
+
+                    .list
+                        @include dimension(70%, 70%)
+                        @include layout(column, none, center)
+                        ul[data="ratio"], ul[data="contrast"], ul[data="stopwatch"]
+                            margin: 1rem 0
+                            @include layout(row, none, center)
+                            @include dimension(100%, none)
+                            li
+                                @include layout(row, none, center)
+                                @include dimension(50%, 100%)
+                            li[data="content"]
+                                @include layout(row, flex-end, center)
+                            .icon
+                                cursor: pointer
+                                margin: 0 20px
+                                @include dimension(32px, 32px)
+                &[value="share"]
+
+                &[value="search"]
+
+                &[value="language"]
+            .cell.shown
+                opacity: 1 !important
+                z-index: 99
+#options.open
+    background-color: rgba(0, 0, 0, .6)
+    z-index: 99 !important
+/* |end Settings| */
+
+/* Home */
+#home
+    .container
+        @include dimension(100%, 100%)
+        @extend %container
+        .grid
+            justify-content: flex-end
+            clip: rect(0, auto, auto, 0)
+            @include get-media($grid, width)
+            @extend %grid
+            .cell.video
+                z-index: -1
+                position: absolute
+                object-fit: cover
+                @include dimension(100%, 100%)
+                @include cardinals(0, 0, 0, 0)
+                a video
+                    position: absolute
+                    object-fit: cover
+                    @include dimension(100%, 100vh)
+            .cell.article
+                width: 100%
+                header
+                    width: 100%
+                    color: white
+                    nav[class='menu']
+                        background-color: rgba(0, 0, 0, .4)
+                        max-width: 2560px
+                        @include menu(5, 'Roboto', 400)
+                        @extend %menu-grid
+                        @each $name in 'list', 'options', 'logo'
+                            @if $name == 'list'
+                                .#{$name}
+                                    padding-left: 10px
+                                    li
+                                        @include get-media($grid, display)
+                            @else if $name == 'options'
+                                .#{$name}
+                                    padding-right: 20px
+                            @else
+                                .#{$name} img
+                                    padding-left: 20px
+                                    @include get-media($logo, width, height)
+                        .list, .blank, .options
+                            @include layout(row, null, center)
+                        .list, .options
+                            li, li a
+                                @include get-media($menu, padding)
+                                a::after
+                                    margin: 0 auto
+                                    opacity: 0
+                                    background-color: $active
+                                    @include cardinals(null, 0, null, 0)
+                                    @include dimension(0, 2px)
+                                    @extend %pseudo
+                        .list > li > a.active:after
+                            opacity: 1
+                            width: 100%
+                            transition: $speed
+                        .blank
+                            flex-grow: 1.1
+                        .options
+                            @include get-media($icon, display)
+                            li
+                                display: flex
+                                .icon
+                                    cursor: pointer
+                                    fill: white
+                                    transition: all 400ms
+                                    @include dimension(24px, 24px)
+                                    &:hover
+                                        @include get-media($icon, fill)
+                            li[lang='kr'] > a
+                                padding: 5px
+                                font-size: 1.2rem
+                                transition: all 400ms
+                                background-color: lightgrey
+                                &:hover
+                                    background-color: grey
+                        .mobile
+                            margin-right: 20px
+                            cursor: pointer
+                            @include dimension(auto, 30px)
+                            @include layout(column, center, center)
+                            @include get-media($icon-mobile, display)
+                            .sticks
+                                background-color: white
+                                margin: 3px 0
+                                @include dimension(30px, 2px)
+                                @each $name in 'top', 'mid', 'bot'
+                                    &[position='#{$name}']
+                                        transition: margin 200ms, transform 400ms
+                            .sticks.fold
+                                margin: -1px 0 !important
+                            .sticks.rotateOdd
+                                transform: rotate(315deg)
+                            .sticks.rotateEven
+                                transform: rotate(225deg)
+                            .sticks.invisible
+                                opacity: 0
+                    .slate
+                        background-color: black
+                        transform: translateY(-100%)
+                        max-width: 2560px
+                        @include dimension(100%, auto)
+                        @include menu(4, 'Roboto', 300)
+                        .holder
+                            margin: 0 120px
+                            @include layout(row, center, center)
+                            @include get-media($holder, padding-top, height)
+                            .panel
+                                @include dimension(calc(100% / 3), 100%)
+                                @include get-media($holder, display)
+                                .list
+                                    position: absolute
+                                    display: none
+                                    @include dimension(100%, auto)
+                                    li
+                                        position: relative
+                                        margin: 0 1.2rem
+                                        border-bottom: 1px solid $inactive
+                                    li > a
+                                        width: 100%
+                                        @include layout(row, none, center)
+                                        @include get-media($holder, padding)
+                                    li[data*='hasExtra']
+                                        @include layout(row, none, center)
+                                    a > .arrow
+                                        right: 0
+                                        transform: rotate(-90deg)
+                                        @extend %arrow
+                                    li::after
+                                        bottom: 0
+                                        background-color: $active
+                                        @include dimension(0, 2px)
+                                        @extend %pseudo
+                                    .active:after
+                                        transition: $speed
+                                        width: 100%
+                                .list.shown
+                                    display: block
+                    .slate.shown
+                        transform: translateY(0)
+                    .board
+                        background-color: black
+                        transform: translateX(100%)
+                        display: block !important
+                        @include menu(4, 'Roboto', 300)
+                        @include get-media($mobile, padding-top)
+                        @include dimension(100%, 100vh)
+                        .wrapper
+                            overflow-x: hidden
+                            overflow-y: scroll
+                            ul:not(.search)
+                                padding-left: 2rem
+                            .list[seq="first"]
+                                padding: 0 1.6rem
+                                &[seq]
+                                    height: calc(100vh - 8.5rem)
+                                    @include layout(column, none, none)
+                                    a .arrow
+                                        z-index: -1
+                                        @include dimension(20px, 20px)
+                                        @extend %arrow
+                                    .arrow.rotate
+                                        transform: rotate(180deg)
+                                        fill: $active
+                                li
+                                    position: relative
+                                    @include dimension(100%, auto)
+                                    a:not([data="fontawesome"])
+                                        padding: 1rem 0
+                                        border-bottom: 1px solid #4b4a4a
+                                        @include layout(row, none, center)
+                                    a.color
+                                        color: $active
+                                .share
+                                    @include layout(row, none, center)
+                                    a
+                                        border-bottom-width: 0 !important
+                                        .icon
+                                            fill: grey !important
+                                    a[data="fontawesome"], a .icon
+                                        cursor: pointer
+                                        fill: white
+                                        font-size: 1.5rem
+                                        transition: all 400ms
+                                        margin: 0 0.3rem
+                                        border-width: 0
+                                        @include layout(row, center, center)
+                                        @include dimension(24px, 24px)
+                            .list[data="child"]
+                                max-height: 0
+                                overflow: hidden
+                                transition: max-height 600ms cubic-bezier(0.455, 0.03, 0.515, 0.955)
+                            .list.unfold
+                                max-height: 1000px !important
+                            .search
+                                bottom: 0
+                                position: fixed
+                                background-color: #dedede
+                                @include dimension(100%, 3.5rem)
+                                @include layout(row, none, center)
+                                .wrapper
+                                    display: flex
+                                    overflow: hidden
+                                    @include dimension(80%, 100%)
+                                    span.icon
+                                        display: block
+                                        transform: scale(.5)
+                                        @include layout(column, center, center)
+                                        @include dimension(10%, 100%)
+                                        svg
+                                            position: relative
+                                            @include dimension(100%, 50%)
+                                    #search-box
+                                        border: none
+                                        background-color: transparent
+                                        font-size: 1.5rem
+                                        @include dimension(90%, 100%)
+                                .language
+                                    background-color: white
+                                    font-size: 1.5rem
+                                    color: $active
+                                    -webkit-appearance: none
+                                    border: 0px
+                                    text-align-last: center
+                                    @include dimension(20%, 100%)
+                    .board.open
+                        transform: translateX(0)
+            .chat
+                z-index: 3
+                position: fixed
+                background-color: $active
+                @include get-media($chat, top)
+                @include layout(row, none, center)
+                p
+                    font-size: 1.3rem
+                    color: white
+                .body
+                    transition: width 600ms cubic-bezier(0.8, 0.01, 0.55, 0.99) 0s
+                    @include layout(row, none, center)
+                    @include dimension(230px, 50px)
+                .body.active
+                    width: 400px
+                empty
+                    flex-grow: 1
+                p.icon
+                    color: white
+                    text-align: right
+                @each $name in 'body', 'icon'
+                    @if $name == 'body'
+                        padding-left: 10px
+                    @else if $name == 'icon'
+                        padding-right: 10px
+            .screen
+                position: fixed
+                width: 293px
+                z-index: 3
+                height: 0
+                overflow: hidden
+                background-color: rgba(255, 255, 255, .6)
+                transition: height 600ms cubic-bezier(0.8, 0.01, 0.55, 0.99)
+                @include get-media($chat-screen, top)
+                .box
+                    padding: 2rem
+                .chatbox-send
+                    position: absolute
+                    bottom: 0
+                    padding: 4px
+                    margin: 10px
+                    resize: vertical
+                    overflow-y: hidden
+                    word-wrap: break-word
+                    @include border-options(0, 10px)
+                    @include dimension(80%, 40px)
+            .screen.active-width
+                width: 464px !important
+            .screen.active-height
+                height: 400px !important
+            .skew:before
+                content: ''
+                position: absolute
+                right: 243px
+                width: 10px
+                transition: right 600ms cubic-bezier(0.8, 0.01, 0.55, 0.99) 0s
+                @extend %skew-border
+            .skew.active::before
+                content: ''
+                position: absolute
+                right: 414px
+            .explore
+                position: absolute
+                bottom: 0
+                padding: 1.5rem 0
+                font-size: 2rem
+                background-color: white
+                @include font-editor("Roboto", bold)
+/* /end Home */
+
+/* Stripe */
+#stripe
+    .container
+        @include dimension(100%, 100%)
+        @extend %container
+        .grid
+            @include get-media($grid, width)
+            @extend %grid
+            .wrapper
+                left: -100%
+                @include layout(row, none, center)
+                @include dimension(100%, 100%)
+                @each $number, $url in $stripe-images
+                    .cell.banner:nth-child(#{$number}):not(.clone)
+                        background-image: url(#{$url})
+                .cell.banner
+                    width: 100%
+                    flex-shrink: 0
+                    left: 0
+                    @include get-media($image, height)
+                    @include image(cover, no-repeat, center center)
+                    a.cover
+                        position: absolute
+                        z-index: 2
+                        @include dimension(100%, 100%)
+                    .introduce
+                        color: white
+                        @include get-media($banner, padding)
+                        h1
+                            @include font-editor("Roboto", bold)
+                            @include get-media($banner, font-size, margin-bottom)
+                        h2
+                            @include get-media($tagline, font-size)
+                .cell.banner.disable
+                    pointer-events: none
+            .wrapper.active
+                background-color: black
+                transition: all 1000ms cubic-bezier(0.93, 0.01, 0.1, 0.98)
+            // #countdown
+            //     position: absolute
+            //     margin: auto
+            //     margin-top: 100px
+            //     height: 40px
+            //     width: 40px
+            //     text-align: center
+            // .borderCircle
+            //     // position: absolute
+            //     top: 0
+            //     right: 0
+            //     width: 40px
+            //     height: 40px
+            //     transform: rotateY(-180deg) rotateZ(-90deg)
+            //     // background-color: steelblue
+            // svg circle
+            //     stroke-dasharray: 113px
+            //     stroke-dashoffset: 0px
+            //     stroke-linecap: round
+            //     stroke-width: 2px
+            //     stroke: white
+            //     fill: none
+            //     animation: countdown 10s linear infinite forwards
+            // @keyframes countdown
+            //     from
+            //         stroke-dashoffset: 0px
+            //
+            //     to
+            //         stroke-dashoffset: 113px
+            .pie
+                position: absolute
+                margin: auto
+                bottom: 0
+                z-index: 4
+                text-align: center
+                svg.timer
+                    // position: absolute
+                    top: 0
+                    right: 0
+                    height: 40px
+                    width: 40px
+                    transform: rotateY(-180deg) rotateZ(-90deg)
+                    circle
+                        stroke-dasharray: var(LGdashOffset)
+                        stroke-dashoffset: 0
+                        stroke-width: 2px
+                        stroke: $active
+                        fill: none
+                        animation: pie 10s linear infinite forwards
+            @keyframes pie
+                from
+                    stroke-dashoffset: 0
+                to
+                    stroke-dashoffset: var(LGdashOffset)
+
+            .page
+                position: absolute
+                bottom: 2%
+                left: 50%
+                z-index: 3
+                transform: translate(-50%, -50%)
+                @include layout(row, center, center)
+                .item, .item .stick
+                    // transition: background-color 200ms
+                    // border-radius: 4px
+                .item
+                    height: .5rem
+                    background-color: #fdfff5
+                    transform: skewX(-25deg)
+                    @include get-media($page, width, margin)
+                    .stick
+                        position: absolute
+                        bottom: 0
+                        background-color: $active
+                        @include dimension(100%, 3px)
+                    &::before
+                        content: ''
+                        @include dimension(100%, 0)
+                        position: absolute
+                        left: 0
+                        bottom: 0
+                    &.timer::before
+                        height: 100%
+                        border-radius: 4px
+                        background-color: white
+                        transition: height 6000ms linear
+                    // &.timer:hover::before
+                    //     background-color: #ddb321
+                .item.disable
+                    pointer-events: none
+/* /end Stripe */
+
+/* Emission */
+#emission
+    .container
+        @extend %container
+        .grid
+            position: fixed
+            bottom: 0
+            background-color: rgba(0, 0, 0, .7)
+            @include layout(row, center, center)
+            @include get-media($grid, width)
+            @extend %grid
+            p
+                font-size: .7rem
+                padding: .5rem 0
+                color: white
+/* /end Emission */

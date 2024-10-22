@@ -1,0 +1,30 @@
+/* Defaults */
+%center
+    position: absolute
+    transform: translate(-50%, -50%)
+    @include cardinals(50%, 50%, none, none)
+%container
+    @include dimension(100%, 100%)
+    @include layout(row, center, center)
+%grid
+    @include layout(row, null, null)
+    max-width: 2560px
+    overflow: hidden
+/* Home */
+%arrow
+    position: absolute
+    fill: white
+    right: 0
+    @include dimension(10px, 10px)
+%menu-grid
+    @include layout(row, null, center)
+    @include get-media($menu, width, height, font-size)
+%pseudo
+    content: ''
+    display: block
+    position: absolute
+    transition: $speed
+%skew-border
+    border-style: solid
+    border-width: 0 0 50px 40px
+    border-color: transparent transparent $active transparent

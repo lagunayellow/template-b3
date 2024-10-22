@@ -1,0 +1,32 @@
+@mixin dimension($width, $height)
+    width: $width
+    height: $height
+@mixin cardinals($top, $left, $bottom, $right)
+    top: $top
+    left: $left
+    bottom: $bottom
+    right: $right
+@mixin layout($flex-flow, $justify, $align)
+    display: flex
+    flex-flow: $flex-flow
+    justify-content: $justify
+    align-items: $align
+@mixin font-editor($family, $weight)
+    font-family: $family
+    font-weight: $weight
+@mixin menu($zi, $ff, $fw)
+    z-index: $zi
+    font-family: $ff !important
+    font-weight: $fw
+    position: fixed
+@mixin border-options($width, $radius)
+    border-width: $width
+    border-radius: $radius
+
+/* Stripe */
+@mixin image($size, $repeat, $position)
+    background-size: $size
+    background-repeat: $repeat
+    background-position: $position
+
+/* /end Stripe */

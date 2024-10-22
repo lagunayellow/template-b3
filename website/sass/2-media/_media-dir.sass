@@ -1,0 +1,38 @@
+@function map-get-nested($map, $firstKeys)
+    @each $secondKeys in $firstKeys
+        $map: map-get($map, $secondKeys)
+    @return $map
+
+@mixin get-media($prefix, $properties...)
+    $myIndex: 1
+    @each $queryTags, $tagValues in $breakpoints
+        $queryCount: if(type-of($tagValues) != 'map', type-of($tagValues) == 'map', 'null')
+        @if $queryCount
+            $mediaQuery: map-get-nested($breakpoints, $queryTags)
+            @each $min, $max in $mediaQuery
+                @media all and (min-width: $min * 1 + 'px') and (max-width: $max * 1 + 'px')
+                    @each $names in $properties
+                        $valueList: map-get($prefix, $names)
+                        $queryTags: length($breakpoints)
+                        $valueLength: length($valueList)
+                        $queryRem: ($queryTags % 2)
+                        $valueRem: ($valueLength % 2)
+                        @if $valueLength < 3
+                            #{$names}: $valueList
+                        @else if ($queryRem == $valueRem)
+                            #{$names}: nth($valueList, $myIndex)
+                    $myIndex: $myIndex + 1
+        @else
+            @media all and (min-width: $tagValues * 1 + 'px')
+                @each $names in $properties
+                    $valueList: map-get($prefix, $names)
+                    $queryTags: length($breakpoints)
+                    $valueLength: length($valueList)
+                    $queryRem: ($queryTags % 2)
+                    $valueRem: ($valueLength % 2)
+                    @if $valueLength < 3
+                        #{$names}: $valueList
+                    @else if ($queryRem == $valueRem)
+                        #{$names}: nth($valueList, $myIndex)
+                $myIndex: $myIndex + 1
+    $myIndex: $myIndex + 1
